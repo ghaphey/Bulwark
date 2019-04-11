@@ -7,17 +7,17 @@ public class PlayerController : MonoBehaviour
 {
     [SerializeField] private float speed = 5f;
 
-    [SerializeField] Texture2D cursorTex;
+    [SerializeField] Texture2D cursorTex = null;
     private CursorMode cursorMode = CursorMode.Auto;
     private Vector2 hotSpot = Vector2.zero;
 
-    private GameObject weapon;
+    private Transform weapon;
 
     // Start is called before the first frame update
     void Start()
     {
         Cursor.SetCursor(cursorTex, hotSpot, cursorMode);
-        weapon = GameObject.FindGameObjectWithTag("Gun");
+        weapon = GameObject.FindGameObjectWithTag("Gun").transform;
     }
 
     // Update is called once per frame
@@ -25,6 +25,7 @@ public class PlayerController : MonoBehaviour
     {
         UpdateMovement();
         UpdateWeaponDirection();
+        FireControl();
     }
 
 
@@ -44,6 +45,42 @@ public class PlayerController : MonoBehaviour
     {
         Vector2 mousePos = Input.mousePosition;
 
+        Ray ray = Camera.main.ScreenPointToRay(mousePos);
+        RaycastHit2D hit = Physics2D.Raycast(ray.origin, ray.direction);
+        if (hit)
+        {
+            print(hit.point);
+            // TODO: Messy, must be a better solution. Also buggy
+            // TODO: mirror gun when it goes to other axis
+            Quaternion rotation = Quaternion.LookRotation(hit.point - (Vector2)weapon.position, weapon.TransformDirection(Vector3.up));
+            weapon.rotation = new Quaternion(0, 0, rotation.z, rotation.w);
+
+        }
 
     }
+
+    private void FireControl()
+    {
+        throw new NotImplementedException();
+    }
+
 }
+
+/*
+RaycastHit hit;
+Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        if (Physics.Raycast(ray, out hit))
+        {
+            turretBase.GetChild(0).LookAt(hit.point);
+        }
+
+RaycastHit hit;
+if (Physics.Raycast(barrel.position, barrel.TransformDirection(Vector3.up), out hit))
+{
+    Instantiate(hitFX, hit.point, Quaternion.identity);
+   if (hit.transform.GetComponent<EnemyHealth>())
+      
+    hit.transform.GetComponent<EnemyHealth>().ApplyDamage(cannonDamage);
+}
+*/
+
