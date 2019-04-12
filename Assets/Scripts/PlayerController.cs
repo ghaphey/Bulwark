@@ -7,6 +7,9 @@ public class PlayerController : MonoBehaviour
 {
     [SerializeField] private float speed = 5f;
 
+    [SerializeField] private GameObject shotPrefab = null;
+    [SerializeField] private float weaponOffset = 0.7f;
+
     [SerializeField] Texture2D cursorTex = null;
     private CursorMode cursorMode = CursorMode.Auto;
     private Vector2 hotSpot = Vector2.zero;
@@ -49,7 +52,7 @@ public class PlayerController : MonoBehaviour
         RaycastHit2D hit = Physics2D.Raycast(ray.origin, ray.direction);
         if (hit)
         {
-            print(hit.point);
+            //print(hit.point);
             // TODO: Messy, must be a better solution. Also buggy
             // TODO: mirror gun when it goes to other axis
             Quaternion rotation = Quaternion.LookRotation(hit.point - (Vector2)weapon.position, weapon.TransformDirection(Vector3.up));
@@ -61,7 +64,14 @@ public class PlayerController : MonoBehaviour
 
     private void FireControl()
     {
-        throw new NotImplementedException();
+        if(Input.GetButtonDown("Fire1"))
+        {
+            GameObject shot = Instantiate(shotPrefab, weapon.transform, false) as GameObject;
+            shot.transform.position = weapon.position + new Vector3(weaponOffset, 0f);
+            shot.transform.rotation = weapon.rotation;
+            //shot.transform.SetParent(transform.parent);
+            shot.GetComponent<Rigidbody2D>().AddRelativeForce(new Vector2(shot.GetComponent<DamageDealer>().GetSpeed(), 0.0f));
+        }
     }
 
 }
