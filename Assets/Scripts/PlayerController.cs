@@ -10,6 +10,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private GameObject shotPrefab = null;
     [SerializeField] private float weaponOffset = 0.7f;
 
+    [SerializeField] private float fireSpeed = 500f;
+
     [SerializeField] Texture2D cursorTex = null;
     private CursorMode cursorMode = CursorMode.Auto;
     private Vector2 hotSpot = Vector2.zero;
@@ -69,7 +71,7 @@ public class PlayerController : MonoBehaviour
             GameObject shot = Instantiate(shotPrefab, weapon.transform) as GameObject;
             shot.transform.rotation = weapon.rotation;
             shot.transform.localPosition += new Vector3(weaponOffset, 0f);
-            shot.GetComponent<Rigidbody2D>().AddRelativeForce(new Vector2(shot.GetComponent<DamageDealer>().GetSpeed(), 0.0f));
+            shot.GetComponent<Rigidbody2D>().AddRelativeForce(new Vector2(fireSpeed, 0.0f));
             shot.transform.SetParent(transform.parent);
         }
     }

@@ -5,7 +5,6 @@ using UnityEngine;
 public class DamageDealer : MonoBehaviour
 {
     [SerializeField] private int damage = 1;
-    [SerializeField] private float speed = 15f;
 
     private void Start()
     {
@@ -20,19 +19,12 @@ public class DamageDealer : MonoBehaviour
         return damage;
     }
 
-    public float GetSpeed()
-    {
-        return speed;
-    }
-
-    public void Hit()
-    {
-        Destroy(gameObject);
-    }
-
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        print(collision.gameObject.name);
-        Hit();
+        HealthController health = collision.gameObject.GetComponent<HealthController>();
+        if (health != null)
+            health.RemoveHealth(damage);
+        if (tag == "Gun")
+            Destroy(gameObject);
     }
 }
