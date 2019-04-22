@@ -29,4 +29,10 @@ public class DamageDealer : MonoBehaviour
     {
         Destroy(gameObject);
     }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        print(collision.gameObject.name);
+        Hit();
+    }
 }

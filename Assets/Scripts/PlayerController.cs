@@ -66,11 +66,11 @@ public class PlayerController : MonoBehaviour
     {
         if(Input.GetButtonDown("Fire1"))
         {
-            GameObject shot = Instantiate(shotPrefab, weapon.transform, false) as GameObject;
-            shot.transform.position = weapon.position + new Vector3(weaponOffset, 0f);
+            GameObject shot = Instantiate(shotPrefab, weapon.transform) as GameObject;
             shot.transform.rotation = weapon.rotation;
-            //shot.transform.SetParent(transform.parent);
+            shot.transform.localPosition += new Vector3(weaponOffset, 0f);
             shot.GetComponent<Rigidbody2D>().AddRelativeForce(new Vector2(shot.GetComponent<DamageDealer>().GetSpeed(), 0.0f));
+            shot.transform.SetParent(transform.parent);
         }
     }
 
