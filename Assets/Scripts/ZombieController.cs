@@ -28,7 +28,7 @@ public class ZombieController : MonoBehaviour
 
     private void Move()
     {
-        transform.position += new Vector3(speed * Time.deltaTime, 0);
+        GetComponent<Rigidbody2D>().MovePosition(new Vector3(transform.position.x + speed * Time.deltaTime, 0));
     }
 
     private void Death()

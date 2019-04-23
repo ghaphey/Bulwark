@@ -42,8 +42,7 @@ public class PlayerController : MonoBehaviour
         float nXPos = horizontal * speed * Time.deltaTime;
         float nYPos = vertical * speed * Time.deltaTime;
 
-        Vector2 newPos = new Vector2(transform.position.x + nXPos, transform.position.y + nYPos);
-        transform.position = newPos;
+        GetComponent<Rigidbody2D>().MovePosition(new Vector2(transform.position.x + nXPos, transform.position.y + nYPos));
     }
 
     private void UpdateWeaponDirection()
