@@ -28,6 +28,7 @@ public class ZombieController : MonoBehaviour
 
     private void Move()
     {
+        // TODO: stop movement when contact the wall
         GetComponent<Rigidbody2D>().MovePosition(new Vector3(transform.position.x + speed * Time.deltaTime, 0));
     }
 

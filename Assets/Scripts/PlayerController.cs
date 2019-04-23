@@ -70,6 +70,7 @@ public class PlayerController : MonoBehaviour
             GameObject shot = Instantiate(shotPrefab, weapon.transform) as GameObject;
             shot.transform.rotation = weapon.rotation;
             shot.transform.localPosition += new Vector3(weaponOffset, 0f);
+            // TODO: add relative velocity of player for consistant projectile speed
             shot.GetComponent<Rigidbody2D>().AddRelativeForce(new Vector2(fireSpeed, 0.0f));
             shot.transform.SetParent(transform.parent);
         }
