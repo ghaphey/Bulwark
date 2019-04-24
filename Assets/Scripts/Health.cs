@@ -1,10 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
-public class HealthController : MonoBehaviour
+public class Health : MonoBehaviour
 {
     [SerializeField] private int totalHealth = 10;
+    [SerializeField] private Text healthText = null;
 
     private int currHealth;
     private bool alive = true;
@@ -12,6 +14,8 @@ public class HealthController : MonoBehaviour
     void Start()
     {
         currHealth = totalHealth;
+        if (healthText != null)
+            healthText.text = totalHealth.ToString();
     }
 
     public void RemoveHealth(int damage)
@@ -19,6 +23,8 @@ public class HealthController : MonoBehaviour
         currHealth -= damage;
         if (currHealth <= 0)
             alive = false;
+        if (healthText != null)
+            healthText.text = currHealth.ToString();
     }
 
     public bool IsAlive()

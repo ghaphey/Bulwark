@@ -6,11 +6,11 @@ using UnityEngine;
 public class ZombieController : MonoBehaviour
 {
     [SerializeField] private float speed = 2;
-    private HealthController myHealth;
+    private Health myHealth;
     // Start is called before the first frame update
     void Start()
     {
-        myHealth = GetComponent<HealthController>();
+        myHealth = GetComponent<Health>();
     }
 
     // Update is called once per frame
