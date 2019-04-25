@@ -27,10 +27,10 @@ public class Damage : MonoBehaviour
     private void OnCollisionEnter2D(Collision2D collision)
     {
         collidedHealth = collision.gameObject.GetComponent<Health>();
-        if (collidedHealth != null)
+        if (collidedHealth != null && (collision.gameObject.tag != gameObject.tag))
         {
-            if (collision.gameObject.tag != gameObject.tag)
-                collidedHealth.RemoveHealth(damage);
+            print(collision.gameObject.name + " hit by " + gameObject.name);
+            collidedHealth.RemoveHealth(damage);
         }
         if (projectile)
             Destroy(gameObject);
@@ -38,11 +38,12 @@ public class Damage : MonoBehaviour
 
     private void OnCollisionStay2D(Collision2D collision)
     {
-        if (collidedHealth != null)
+        if (collidedHealth != null && (collision.gameObject.tag != gameObject.tag))
         {
             count += Time.deltaTime;
             if (count >= hitRate)
             {
+                print(collision.gameObject.name + " hit by " + gameObject.name);
                 collidedHealth.RemoveHealth(damage);
                 count = 0f;
             }
