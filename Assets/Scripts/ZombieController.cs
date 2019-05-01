@@ -10,24 +10,14 @@ public class ZombieController : MonoBehaviour
     private Health myHealth;
     private Rigidbody2D rb;
 
-    private Transform goal = null;
-    private NavMeshAgent agent = null;
-    // enemy spawner will calculate the goal and assign it
+    private bool playerTeamContact = false;
 
     void Start()
     {
         myHealth = GetComponent<Health>();
         rb = GetComponent<Rigidbody2D>();
-        agent = GetComponent<NavMeshAgent>();
     }
-
-    public void SetGoal(Transform newGoal)
-    {
-        goal = newGoal;
-        agent.SetDestination(goal.position);
-        
-    }
-
+    
     // Update is called once per frame
     void Update()
     {
@@ -43,14 +33,44 @@ public class ZombieController : MonoBehaviour
 
     private void Move()
     {
-        // TODO: stop movement when contact the wall
-        //rb.MovePosition(new Vector3(transform.position.x + speed * Time.deltaTime, transform.position.y));
-        //rb.AddForce(new Vector2(transform.position.x + speed * Time.deltaTime, transform.position.y));
+        if (playerTeamContact == true)
+            return;
+        else
+        {
+            rb.MovePosition(new Vector3(transform.position.x + speed * Time.deltaTime, transform.position.y));
+            //rb.AddForce(new Vector2(transform.position.x + speed * Time.deltaTime, transform.position.y));
+        }
     }
 
     private void Death()
     {
-        print("Zombie Died");
+        print("Zombie Died: " + myHealth.IsAlive().ToString());
         Destroy(gameObject);
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.transform.tag == "Player")
+        {
+            Damage projectile = collision.gameObject.GetComponent<Damage>();
+            if (projectile != null)
+            {
+                if (projectile.projectile)
+                {
+                    playerTeamContact = false;
+                    return;
+                }
+            }
+            playerTeamContact = true;
+        }   
+    }
+
+    private void OnCollisionExit2D(Collision2D collision)
+    {
+        if (collision.transform.tag == "Player")
+        {
+            playerTeamContact = false;
+            print("out");
+        }
     }
 }

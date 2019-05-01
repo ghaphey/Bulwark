@@ -6,7 +6,7 @@ public class Damage : MonoBehaviour
 {
     [SerializeField] private int damage = 1;
     [SerializeField] private float hitRate = 10;
-    [SerializeField] private bool projectile = false;
+    [SerializeField] public bool projectile = false;
 
     private float count = 0f;
     private Health collidedHealth = null;
@@ -32,6 +32,8 @@ public class Damage : MonoBehaviour
             print(collision.gameObject.name + " hit by " + gameObject.name);
             collidedHealth.RemoveHealth(damage);
         }
+        else
+            collidedHealth = null;
         if (projectile)
             Destroy(gameObject);
     }
@@ -50,7 +52,7 @@ public class Damage : MonoBehaviour
         }
     }
 
-    private void OnCollisionExit(Collision collision)
+    private void OnCollisionExit2D(Collision2D collision)
     {
         count = 0f;
         collidedHealth = null;
