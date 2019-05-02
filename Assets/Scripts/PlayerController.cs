@@ -7,22 +7,25 @@ public class PlayerController : MonoBehaviour
 {
     [SerializeField] private float speed = 5f;
 
-    [SerializeField] private GameObject shotPrefab = null;
-    [SerializeField] private float weaponOffset = 0.7f;
-
-    [SerializeField] private float fireSpeed = 500f;
+    //[SerializeField] private GameObject shotPrefab = null;
+    //[SerializeField] private float weaponOffset = 0.7f;
+    //[SerializeField] private float fireSpeed = 500f;
 
     [SerializeField] Texture2D cursorTex = null;
     private CursorMode cursorMode = CursorMode.Auto;
     private Vector2 hotSpot = Vector2.zero;
 
-    private Transform weapon;
+    private Transform held;
+    private Weapon weapon;
+    private float reloadTimer = 0f;
+    private bool hasAmmo = true;
 
     // Start is called before the first frame update
     void Start()
     {
         Cursor.SetCursor(cursorTex, hotSpot, cursorMode);
-        weapon = GameObject.FindGameObjectWithTag("Gun").transform;
+        held = GameObject.FindGameObjectWithTag("Gun").transform;
+        weapon = GetComponentInChildren<Weapon>();
     }
 
     // Update is called once per frame
@@ -56,8 +59,8 @@ public class PlayerController : MonoBehaviour
             //print(hit.point);
             // TODO: Messy, must be a better solution. Also buggy
             // TODO: mirror gun when it goes to other axis
-            Quaternion rotation = Quaternion.LookRotation(hit.point - (Vector2)weapon.position, weapon.TransformDirection(Vector3.up));
-            weapon.rotation = new Quaternion(0, 0, rotation.z, rotation.w);
+            Quaternion rotation = Quaternion.LookRotation(hit.point - (Vector2)held.position, held.TransformDirection(Vector3.up));
+            held.rotation = new Quaternion(0, 0, rotation.z, rotation.w);
 
         }
 
@@ -65,14 +68,22 @@ public class PlayerController : MonoBehaviour
 
     private void FireControl()
     {
-        if(Input.GetButtonDown("Fire1"))
+        if (reloadTimer <= 0f)
         {
-            GameObject shot = Instantiate(shotPrefab, weapon.transform) as GameObject;
-            shot.transform.rotation = weapon.rotation;
-            shot.transform.localPosition += new Vector3(weaponOffset, 0f);
-            // TODO: add relative velocity of player for consistant projectile speed
-            shot.GetComponent<Rigidbody2D>().AddRelativeForce(new Vector2(fireSpeed, 0.0f));
-            shot.transform.SetParent(transform.parent);
+            if (Input.GetButtonDown("Fire1") && hasAmmo)
+            {
+                hasAmmo = weapon.Fire();
+            }
+            else if (Input.GetButtonDown("Fire2"))
+            {
+                reloadTimer = weapon.GetReloadTime();
+            }
+        }
+        else
+        {
+            reloadTimer -= Time.deltaTime;
+            if (reloadTimer <= 0f)
+                weapon.Reload();
         }
     }
 
