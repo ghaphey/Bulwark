@@ -26,6 +26,7 @@ public class PlayerController : MonoBehaviour
         Cursor.SetCursor(cursorTex, hotSpot, cursorMode);
         held = GameObject.FindGameObjectWithTag("Gun").transform;
         weapon = GetComponentInChildren<Weapon>();
+        weapon.transform.localPosition = new Vector3(weapon.GetWeaponOffset(), 0f);
     }
 
     // Update is called once per frame
@@ -76,14 +77,19 @@ public class PlayerController : MonoBehaviour
             }
             else if (Input.GetButtonDown("Fire2"))
             {
+                // TODO: AMMO COUNTER / RELOAD TIMER DISPLAY
                 reloadTimer = weapon.GetReloadTime();
             }
         }
         else
         {
+            //TODO: RELOAD ANIMATIONS
             reloadTimer -= Time.deltaTime;
             if (reloadTimer <= 0f)
+            {
                 weapon.Reload();
+                hasAmmo = true;
+            }
         }
     }
 
