@@ -20,7 +20,6 @@ public class PlayerController : MonoBehaviour
     private float reloadTimer = 0f;
     private bool hasAmmo = true;
 
-    // Start is called before the first frame update
     void Start()
     {
         Cursor.SetCursor(cursorTex, hotSpot, cursorMode);
@@ -29,7 +28,6 @@ public class PlayerController : MonoBehaviour
         weapon.transform.localPosition = new Vector3(weapon.GetWeaponOffset(), 0f);
     }
 
-    // Update is called once per frame
     void Update()
     {
         UpdateMovement();
@@ -77,7 +75,6 @@ public class PlayerController : MonoBehaviour
             }
             else if (Input.GetButtonDown("Fire2"))
             {
-                // TODO: AMMO COUNTER / RELOAD TIMER DISPLAY
                 reloadTimer = weapon.GetReloadTime();
             }
         }
@@ -85,6 +82,7 @@ public class PlayerController : MonoBehaviour
         {
             //TODO: RELOAD ANIMATIONS
             reloadTimer -= Time.deltaTime;
+            weapon.AdjustReloadBar(reloadTimer);
             if (reloadTimer <= 0f)
             {
                 weapon.Reload();

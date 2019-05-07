@@ -19,10 +19,18 @@ public class Weapon : MonoBehaviour
 
     private int currMag = 0;
     private List<GameObject> ammoImages = null;
+    private Text reloadText = null;
+    private float reloadBarWidth = 0f;
+    private Slider reloadBar = null;
 
     void Start()
     {
         transform.localPosition = new Vector3(weaponOffset, 0f);
+        reloadText = ammoPanel.GetComponentInChildren<Text>();
+        reloadText.enabled = false;
+        reloadBarWidth = ammoPanel.rect.width;
+        reloadBar = ammoPanel.GetComponentInChildren<Slider>();
+        reloadBar.gameObject.SetActive(false);
         ammoImages = new List<GameObject>();
         PopulateAmmoPanel(currMag);
         currMag = magSize;
@@ -38,6 +46,14 @@ public class Weapon : MonoBehaviour
         }
     }
 
+    private void ReloadAmmoPanel(int currIndex)
+    {
+        for (int i = currIndex; i < magSize; i++)
+        {
+            ammoImages[i].SetActive(true);
+        }
+    }
+
     public float GetReloadTime()
     {
         return reloadTime;
@@ -50,22 +66,28 @@ public class Weapon : MonoBehaviour
 
     public void Reload()
     {
-        PopulateAmmoPanel(currMag);
+        reloadText.enabled = false;
+        reloadBar.gameObject.SetActive(false);
+        ReloadAmmoPanel(currMag);
         currMag = magSize;
+    }
+
+    public void AdjustReloadBar(float currTimer)
+    {
+        reloadBar.gameObject.SetActive(true);
+        reloadBar.value = currTimer / reloadTime;
     }
 
     public bool Fire()
     {
         if (currMag <= 0)
         {
-            print("Empty Magazine");
-            //TODO: Print UI Message
+            reloadText.enabled = true;
             return false;
         }
         else
         {
-            ammoImages.RemoveAt(currMag - 1);
-            // TODO: ACTUALLY DELETE THE IMAGE
+            ammoImages[currMag - 1].SetActive(false);
             currMag--;
             GameObject shot = Instantiate(shotPrefab, transform) as GameObject;
             shot.transform.rotation = transform.rotation;
