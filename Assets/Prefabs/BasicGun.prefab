@@ -124,10 +124,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   fireSpeed: 500
   magSize: 10
-  reloadTime: 5
+  reloadTime: 4
   weaponOffset: 0.4
   shotPrefab: {fileID: 2924012622011402009, guid: 3a1d4db4ad49ca341bb1eb99d093eec3,
     type: 3}
+  ammoPanel: {fileID: 0}
+  ammoImage: {fileID: 0}
+  widthOffset: 40
 --- !u!1 &3104103946882331555
 GameObject:
   m_ObjectHideFlags: 0
