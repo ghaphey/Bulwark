@@ -6,16 +6,18 @@ using UnityEngine.UI;
 public class Health : MonoBehaviour
 {
     [SerializeField] private int totalHealth = 10;
-    [SerializeField] private Text healthText = null;
+    [SerializeField] private Slider healthSlider = null;
+    //[SerializeField] private Text healthText = null;
 
     private int currHealth;
     private bool alive = true;
+
+    public float currHealthPercent = 1f;
     // Start is called before the first frame update
     void Start()
     {
         currHealth = totalHealth;
-        if (healthText != null)
-            healthText.text = totalHealth.ToString();
+
     }
 
     public void RemoveHealth(int damage)
@@ -23,8 +25,11 @@ public class Health : MonoBehaviour
         currHealth -= damage;
         if (currHealth <= 0)
             alive = false;
-        if (healthText != null)
-            healthText.text = currHealth.ToString();
+        if (healthSlider != null)
+        {
+            currHealthPercent = (float)currHealth / totalHealth;
+            healthSlider.value = currHealthPercent;
+        }
     }
 
     public bool IsAlive()

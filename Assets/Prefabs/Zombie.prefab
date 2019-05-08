@@ -96,7 +96,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   totalHealth: 2
-  healthText: {fileID: 0}
+  healthSlider: {fileID: 0}
+  currHealthPercent: 1
 --- !u!114 &6509466023093814608
 MonoBehaviour:
   m_ObjectHideFlags: 0

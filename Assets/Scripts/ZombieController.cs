@@ -70,7 +70,7 @@ public class ZombieController : MonoBehaviour
         if (collision.transform.tag == "Player")
         {
             playerTeamContact = false;
-            print("out");
+            //print("out");
         }
     }
 }

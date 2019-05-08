@@ -40,6 +40,7 @@ public class Damage : MonoBehaviour
 
     private void OnCollisionStay2D(Collision2D collision)
     {
+        // TODO, NEED TO CHANGE AS THE STOP MOVEMENT IS INTERRUPTING THE CONST ATTACKS
         if (collidedHealth != null && (collision.gameObject.tag != gameObject.tag))
         {
             count += Time.deltaTime;
