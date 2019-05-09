@@ -73,4 +73,7 @@ public class ZombieController : MonoBehaviour
             //print("out");
         }
     }
+
+
+    // NEED TO ADD MOVEMENT BEHAVIORS HERE, AND CHANGE ONLY ATTACK TO CAUSE DAMAGE
 }
