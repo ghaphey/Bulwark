@@ -7,15 +7,26 @@ using UnityEngine.AI;
 public class ZombieController : MonoBehaviour
 {
     [SerializeField] private float speed = 2f;
+    [SerializeField] private GameObject attack = null;
+    [SerializeField] private float attackLen = 0.5f;
+    [SerializeField] private float hitRate = 1.5f;
     private Health myHealth;
     private Rigidbody2D rb;
 
     private bool playerTeamContact = false;
+    private bool attacking = false;
+
+    private float animTimer = 0f;
+    private float attackTimer = 0f;
+
+    private Animator anim = null;
+
 
     void Start()
     {
         myHealth = GetComponent<Health>();
         rb = GetComponent<Rigidbody2D>();
+        anim = GetComponent<Animator>();
     }
     
     // Update is called once per frame
@@ -24,12 +35,15 @@ public class ZombieController : MonoBehaviour
         if(myHealth.IsAlive())
         {
             Move();
+            if(attacking)
+                Attack();
         }
         else
         {
             Death();
         }
     }
+
 
     private void Move()
     {
@@ -42,6 +56,44 @@ public class ZombieController : MonoBehaviour
         }
     }
 
+
+    private void Attack()
+    {
+        if (attackTimer <= 0f)
+        {
+            attack.SetActive(true);
+            bool complete = ThrowAttack();
+            if (complete)
+            {
+                attackTimer = hitRate;
+                attack.SetActive(false);
+            }
+        }
+        else
+            attackTimer -= Time.deltaTime;
+    }
+
+    private void ThrowAttack()
+    {
+        if (animTimer <= 0f)
+        {
+            // TODO: must play animation and keep attack hit box up
+            // until the animation is complete, then turn off until
+            // the next hit cycle
+            anim.SetBool("attacking", true);
+            animTimer = attackLen;
+        }
+        else
+        {
+            animTimer -= Time.deltaTime;
+        }
+    }
+
+    public void HaltAttack()
+    {
+        attack.SetActive(false);
+    }
+
     private void Death()
     {
         print("Zombie Died: " + myHealth.IsAlive().ToString());
@@ -52,16 +104,16 @@ public class ZombieController : MonoBehaviour
     {
         if (collision.transform.tag == "Player")
         {
-            Damage projectile = collision.gameObject.GetComponent<Damage>();
-            if (projectile != null)
+            Damage damage = collision.gameObject.GetComponent<Damage>();
+            if (damage != null)
             {
-                if (projectile.projectile)
-                {
-                    playerTeamContact = false;
-                    return;
-                }
+                playerTeamContact = false;
             }
-            playerTeamContact = true;
+            else
+            {
+                attacking = true;
+                playerTeamContact = true;
+            }
         }   
     }
 
@@ -70,7 +122,9 @@ public class ZombieController : MonoBehaviour
         if (collision.transform.tag == "Player")
         {
             playerTeamContact = false;
-            //print("out");
+            attacking = false;
+            attackTimer = 0f;
+            animTimer = 0f;
         }
     }
 

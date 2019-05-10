@@ -45,6 +45,6 @@ public class EnemySpawner : MonoBehaviour
     {
         float location = UnityEngine.Random.Range(-spawnRadius, spawnRadius);
         Instantiate(enemyPrefabs[0], new Vector3(transform.position.x, transform.position.y + location), Quaternion.identity, transform);
-
+        //TODO: CALCULATE Z LOCATION FOR LAYERING
     }
 }

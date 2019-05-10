@@ -5,10 +5,10 @@ using UnityEngine;
 public class Damage : MonoBehaviour
 {
     [SerializeField] private int damage = 1;
-    [SerializeField] private float hitRate = 10;
+    //[SerializeField] private float hitRate = 10;
     [SerializeField] public bool projectile = false;
 
-    private float count = 0f;
+   // private float count = 0f;
     private Health collidedHealth = null;
 
     private void Start()
@@ -32,13 +32,13 @@ public class Damage : MonoBehaviour
             //print(collision.gameObject.name + " hit by " + gameObject.name);
             collidedHealth.RemoveHealth(damage);
         }
-        else
-            collidedHealth = null;
+        //else
+        //    collidedHealth = null;
         if (projectile)
             Destroy(gameObject);
     }
 
-    private void OnCollisionStay2D(Collision2D collision)
+/*    private void OnCollisionStay2D(Collision2D collision)
     {
         // TODO, NEED TO CHANGE AS THE STOP MOVEMENT IS INTERRUPTING THE CONST ATTACKS
         if (collidedHealth != null && (collision.gameObject.tag != gameObject.tag))
@@ -51,11 +51,6 @@ public class Damage : MonoBehaviour
                 count = 0f;
             }
         }
-    }
-
-    private void OnCollisionExit2D(Collision2D collision)
-    {
-        count = 0f;
-        collidedHealth = null;
-    }
+    } */
+    
 }
