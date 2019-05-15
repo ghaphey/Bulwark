@@ -29,7 +29,7 @@ public class Damage : MonoBehaviour
         collidedHealth = collision.gameObject.GetComponent<Health>();
         if (collidedHealth != null && (collision.gameObject.tag != gameObject.tag))
         {
-            //print(collision.gameObject.name + " hit by " + gameObject.name);
+            print(collision.gameObject.name + " hit by " + gameObject.name);
             collidedHealth.RemoveHealth(damage);
         }
         //else
@@ -38,19 +38,30 @@ public class Damage : MonoBehaviour
             Destroy(gameObject);
     }
 
-/*    private void OnCollisionStay2D(Collision2D collision)
+    private void OnTriggerEnter2D(Collider2D collision)
     {
-        // TODO, NEED TO CHANGE AS THE STOP MOVEMENT IS INTERRUPTING THE CONST ATTACKS
+        collidedHealth = collision.gameObject.GetComponent<Health>();
         if (collidedHealth != null && (collision.gameObject.tag != gameObject.tag))
         {
-            count += Time.deltaTime;
-            if (count >= hitRate)
-            {
-                //print(collision.gameObject.name + " hit by " + gameObject.name);
-                collidedHealth.RemoveHealth(damage);
-                count = 0f;
-            }
+            print(collision.gameObject.name + " hit by " + gameObject.name);
+            collidedHealth.RemoveHealth(damage);
         }
-    } */
+    }
     
+
+    /*    private void OnCollisionStay2D(Collision2D collision)
+        {
+            // TODO, NEED TO CHANGE AS THE STOP MOVEMENT IS INTERRUPTING THE CONST ATTACKS
+            if (collidedHealth != null && (collision.gameObject.tag != gameObject.tag))
+            {
+                count += Time.deltaTime;
+                if (count >= hitRate)
+                {
+                    //print(collision.gameObject.name + " hit by " + gameObject.name);
+                    collidedHealth.RemoveHealth(damage);
+                    count = 0f;
+                }
+            }
+        } */
+
 }

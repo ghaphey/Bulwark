@@ -7,7 +7,7 @@ using UnityEngine.AI;
 public class ZombieController : MonoBehaviour
 {
     [SerializeField] private float speed = 2f;
-    [SerializeField] private GameObject attack = null;
+    [SerializeField] private Collider2D attack = null;
     [SerializeField] private float attackLen = 0.5f;
     [SerializeField] private float hitRate = 1.5f;
     private Health myHealth;
@@ -61,37 +61,35 @@ public class ZombieController : MonoBehaviour
     {
         if (attackTimer <= 0f)
         {
-            attack.SetActive(true);
+            if (!attack.enabled)
+            {
+                attack.enabled = true;
+                anim.SetBool("attacking", true);
+                animTimer = attackLen;
+            }
             bool complete = ThrowAttack();
             if (complete)
             {
+                anim.SetBool("attacking", false);
                 attackTimer = hitRate;
-                attack.SetActive(false);
+                attack.enabled = false;
             }
         }
         else
             attackTimer -= Time.deltaTime;
     }
 
-    private void ThrowAttack()
+    private bool ThrowAttack()
     {
         if (animTimer <= 0f)
         {
-            // TODO: must play animation and keep attack hit box up
-            // until the animation is complete, then turn off until
-            // the next hit cycle
-            anim.SetBool("attacking", true);
-            animTimer = attackLen;
+            return true;
         }
         else
         {
             animTimer -= Time.deltaTime;
+            return false;
         }
-    }
-
-    public void HaltAttack()
-    {
-        attack.SetActive(false);
     }
 
     private void Death()
