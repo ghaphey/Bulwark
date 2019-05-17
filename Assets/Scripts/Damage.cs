@@ -29,7 +29,7 @@ public class Damage : MonoBehaviour
         collidedHealth = collision.gameObject.GetComponent<Health>();
         if (collidedHealth != null && (collision.gameObject.tag != gameObject.tag))
         {
-            print(collision.gameObject.name + " hit by " + gameObject.name);
+            //print(collision.gameObject.name + " hit by " + gameObject.name);
             collidedHealth.RemoveHealth(damage);
         }
         //else
@@ -43,7 +43,7 @@ public class Damage : MonoBehaviour
         collidedHealth = collision.gameObject.GetComponent<Health>();
         if (collidedHealth != null && (collision.gameObject.tag != gameObject.tag))
         {
-            print(collision.gameObject.name + " hit by " + gameObject.name);
+            //print(collision.gameObject.name + " hit by " + gameObject.name);
             collidedHealth.RemoveHealth(damage);
         }
     }

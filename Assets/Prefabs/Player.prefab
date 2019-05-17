@@ -176,6 +176,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 5
   cursorTex: {fileID: 2800000, guid: 4fe0ac3a83f8e164292becb3534a032b, type: 3}
+  spriteRenderer: {fileID: 0}
 --- !u!114 &4875770694590165247
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -189,7 +190,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   totalHealth: 10
-  healthText: {fileID: 0}
+  healthSlider: {fileID: 0}
+  currHealthPercent: 1
 --- !u!1 &4875770694987225570
 GameObject:
   m_ObjectHideFlags: 0
@@ -288,6 +290,12 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3104103946730453707, guid: 71d9da8e3162d4747a84824dcf5490b6,
+        type: 3}
+      propertyPath: ammoImage
+      value: 
+      objectReference: {fileID: 4610370578295479291, guid: 4e5ae7accfa3bb54b914cc7a17524da3,
+        type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 71d9da8e3162d4747a84824dcf5490b6, type: 3}
 --- !u!4 &7546284249265334703 stripped

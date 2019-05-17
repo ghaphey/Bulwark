@@ -11,7 +11,9 @@ public class PlayerController : MonoBehaviour
     //[SerializeField] private float weaponOffset = 0.7f;
     //[SerializeField] private float fireSpeed = 500f;
 
-    [SerializeField] Texture2D cursorTex = null;
+    [SerializeField] private Texture2D cursorTex = null;
+    [SerializeField] private SpriteRenderer spriteRenderer = null;
+
     private CursorMode cursorMode = CursorMode.Auto;
     private Vector2 hotSpot = Vector2.zero;
 
@@ -19,6 +21,7 @@ public class PlayerController : MonoBehaviour
     private Weapon weapon;
     private float reloadTimer = 0f;
     private bool hasAmmo = true;
+    private Animator anim = null;
 
     void Start()
     {
@@ -26,6 +29,7 @@ public class PlayerController : MonoBehaviour
         held = GameObject.FindGameObjectWithTag("Gun").transform;
         weapon = GetComponentInChildren<Weapon>();
         weapon.transform.localPosition = new Vector3(weapon.GetWeaponOffset(), 0f);
+        anim = GetComponent<Animator>();
     }
 
     void Update()
@@ -44,7 +48,21 @@ public class PlayerController : MonoBehaviour
         float nXPos = horizontal * speed * Time.deltaTime;
         float nYPos = vertical * speed * Time.deltaTime;
 
-        GetComponent<Rigidbody2D>().MovePosition(new Vector2(transform.position.x + nXPos, transform.position.y + nYPos));
+        anim.SetBool("moving", true);
+        if (nXPos < 0)
+        {
+            spriteRenderer.flipX = true;
+        }
+        else if (nXPos > 0)
+        {
+            spriteRenderer.flipX = false;
+        }
+        else
+        {
+            anim.SetBool("moving", false);
+        }
+
+            GetComponent<Rigidbody2D>().MovePosition(new Vector2(transform.position.x + nXPos, transform.position.y + nYPos));
     }
 
     private void UpdateWeaponDirection()
