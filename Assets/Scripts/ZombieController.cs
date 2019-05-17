@@ -48,9 +48,13 @@ public class ZombieController : MonoBehaviour
     private void Move()
     {
         if (playerTeamContact == true)
+        {
+            anim.SetBool("moving", false);
             return;
+        }
         else
         {
+            anim.SetBool("moving", true);
             rb.MovePosition(new Vector3(transform.position.x + speed * Time.deltaTime, transform.position.y));
             //rb.AddForce(new Vector2(transform.position.x + speed * Time.deltaTime, transform.position.y));
         }
