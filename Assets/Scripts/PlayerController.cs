@@ -73,12 +73,19 @@ public class PlayerController : MonoBehaviour
         RaycastHit2D hit = Physics2D.Raycast(ray.origin, ray.direction);
         if (hit)
         {
-            //print(hit.point);
             // TODO: Messy, must be a better solution. Also buggy
-            // TODO: mirror gun when it goes to other axis
+
             Quaternion rotation = Quaternion.LookRotation(hit.point - (Vector2)held.position, held.TransformDirection(Vector3.up));
             held.rotation = new Quaternion(0, 0, rotation.z, rotation.w);
-
+            float zAng = held.rotation.eulerAngles.z;
+            if (zAng <= 90f || zAng >= 270f)
+            {
+                weapon.transform.localScale = new Vector3(1, 1, 1);
+            }
+            else
+            {
+                weapon.transform.localScale = new Vector3(1, -1, 1);
+            }
         }
 
     }
