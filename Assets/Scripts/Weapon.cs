@@ -22,6 +22,7 @@ public class Weapon : MonoBehaviour
     private Text reloadText = null;
     private float reloadBarWidth = 0f;
     private Slider reloadBar = null;
+    private ParticleSystem fireFx = null;
 
     void Start()
     {
@@ -34,6 +35,8 @@ public class Weapon : MonoBehaviour
         ammoImages = new List<GameObject>();
         PopulateAmmoPanel(currMag);
         currMag = magSize;
+
+        fireFx = GetComponent<ParticleSystem>();
     }
 
     private void PopulateAmmoPanel(int currIndex)
@@ -90,6 +93,7 @@ public class Weapon : MonoBehaviour
             ammoImages[currMag - 1].SetActive(false);
             currMag--;
             GameObject shot = Instantiate(shotPrefab, transform) as GameObject;
+            fireFx.Play();
             shot.transform.rotation = transform.rotation;
             shot.transform.localPosition += new Vector3(weaponOffset, 0f);
             // TODO: add relative velocity of player for consistant projectile speed

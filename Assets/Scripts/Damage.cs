@@ -10,6 +10,7 @@ public class Damage : MonoBehaviour
 
    // private float count = 0f;
     private Health collidedHealth = null;
+    private ParticleSystem hitFx = null;
 
     private void Start()
     {
@@ -17,6 +18,8 @@ public class Damage : MonoBehaviour
         Collider2D collider = GetComponent<Collider2D>();
         if (collider == null)
             print(gameObject.name + ": no collider");
+
+        hitFx = GetComponent<ParticleSystem>();
     }
 
     public int GetDamage()
@@ -31,6 +34,9 @@ public class Damage : MonoBehaviour
         {
             //print(collision.gameObject.name + " hit by " + gameObject.name);
             collidedHealth.RemoveHealth(damage);
+            if (hitFx != null)
+                hitFx.Play();
+            //TODO: not playing the particle system properly
         }
         //else
         //    collidedHealth = null;
