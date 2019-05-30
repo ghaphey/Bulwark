@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class EnemySpawner : MonoBehaviour
 {
-    [SerializeField] private Text waveCount;
+    [SerializeField] private Text waveCount = null;
 
     [Header("Spawn Properties")]
     [SerializeField] private GameObject[] enemyPrefabs = null;

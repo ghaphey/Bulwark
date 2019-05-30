@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -8,15 +9,17 @@ public class Weapon : MonoBehaviour
     [Header ("Weapon Properties")]
     [SerializeField] private float fireSpeed = 500f;
     [SerializeField] private int magSize = 10;
+    [SerializeField] private int bullets = -1;
     [SerializeField] private float reloadTime = 5f;
     [SerializeField] private float weaponOffset = 0.7f;
     [SerializeField] private GameObject shotPrefab = null;
     [Header("UI Properties")]
-    [SerializeField] private RectTransform ammoPanel = null;
     [SerializeField] private GameObject ammoImage = null;
     [SerializeField] private float widthOffset = 40f;
     //[SerializeField] private float heightOffset = 60f;
 
+
+    private RectTransform ammoPanel = null;
     private int currMag = 0;
     private List<GameObject> ammoImages = null;
     private Text reloadText = null;
@@ -26,9 +29,9 @@ public class Weapon : MonoBehaviour
 
     void Start()
     {
+        ammoPanel = GameObject.FindGameObjectWithTag("Ammo").GetComponent<RectTransform>();
         transform.localPosition = new Vector3(weaponOffset, 0f);
         reloadText = ammoPanel.GetComponentInChildren<Text>();
-        reloadText.enabled = false;
         reloadBarWidth = ammoPanel.rect.width;
         reloadBar = ammoPanel.GetComponentInChildren<Slider>();
         reloadBar.gameObject.SetActive(false);
@@ -69,7 +72,7 @@ public class Weapon : MonoBehaviour
 
     public void Reload()
     {
-        reloadText.enabled = false;
+        reloadText.text = bullets.ToString();
         reloadBar.gameObject.SetActive(false);
         ReloadAmmoPanel(currMag);
         currMag = magSize;
@@ -85,13 +88,16 @@ public class Weapon : MonoBehaviour
     {
         if (currMag <= 0)
         {
-            reloadText.enabled = true;
+            reloadText.text = "RELOAD";
             return false;
         }
         else
         {
             ammoImages[currMag - 1].SetActive(false);
             currMag--;
+            if (bullets != -1)
+                bullets--;
+            reloadText.text = bullets.ToString();
             GameObject shot = Instantiate(shotPrefab, transform) as GameObject;
             fireFx.Play();
             shot.transform.rotation = transform.rotation;
@@ -100,7 +106,14 @@ public class Weapon : MonoBehaviour
             shot.GetComponent<Rigidbody2D>().AddRelativeForce(new Vector2(fireSpeed, 0.0f));
             shot.transform.SetParent(transform.parent.parent);
             // set parent as world
+            if (bullets == 0)
+                DiscardWeapon();
             return true;
         }
+    }
+
+    private void DiscardWeapon()
+    {
+        Destroy(gameObject);
     }
 }

@@ -13,11 +13,12 @@ public class PlayerController : MonoBehaviour
 
     [SerializeField] private Texture2D cursorTex = null;
     [SerializeField] private SpriteRenderer spriteRenderer = null;
+    [SerializeField] private Transform pivot = null;
 
     private CursorMode cursorMode = CursorMode.Auto;
     private Vector2 hotSpot = Vector2.zero;
 
-    private Transform held;
+    
     private Weapon weapon;
     private float reloadTimer = 0f;
     private bool hasAmmo = true;
@@ -26,7 +27,6 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         Cursor.SetCursor(cursorTex, hotSpot, cursorMode);
-        held = GameObject.FindGameObjectWithTag("Gun").transform;
         weapon = GetComponentInChildren<Weapon>();
         weapon.transform.localPosition = new Vector3(weapon.GetWeaponOffset(), 0f);
         anim = GetComponent<Animator>();
@@ -75,9 +75,9 @@ public class PlayerController : MonoBehaviour
         {
             // TODO: Messy, must be a better solution. Also buggy
 
-            Quaternion rotation = Quaternion.LookRotation(hit.point - (Vector2)held.position, held.TransformDirection(Vector3.up));
-            held.rotation = new Quaternion(0, 0, rotation.z, rotation.w);
-            float zAng = held.rotation.eulerAngles.z;
+            Quaternion rotation = Quaternion.LookRotation(hit.point - (Vector2)pivot.position, pivot.TransformDirection(Vector3.up));
+            pivot.rotation = new Quaternion(0, 0, rotation.z, rotation.w);
+            float zAng = pivot.rotation.eulerAngles.z;
             if (zAng <= 90f || zAng >= 270f)
             {
                 weapon.transform.localScale = new Vector3(1, 1, 1);
