@@ -178,6 +178,7 @@ MonoBehaviour:
   speed: 5
   cursorTex: {fileID: 2800000, guid: 4fe0ac3a83f8e164292becb3534a032b, type: 3}
   spriteRenderer: {fileID: 4875770694257478107}
+  pivot: {fileID: 4875770694987225581}
 --- !u!114 &4875770694590165247
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -222,8 +223,8 @@ GameObject:
   m_Component:
   - component: {fileID: 4875770694987225581}
   m_Layer: 2
-  m_Name: Holding
-  m_TagString: Gun
+  m_Name: Pivot
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

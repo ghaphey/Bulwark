@@ -19,7 +19,8 @@ public class PlayerController : MonoBehaviour
     private Vector2 hotSpot = Vector2.zero;
 
     
-    private Weapon weapon;
+    private List<Weapon> weapons;
+    private int weaponIndex = 0;
     private float reloadTimer = 0f;
     private bool hasAmmo = true;
     private Animator anim = null;
@@ -27,8 +28,9 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         Cursor.SetCursor(cursorTex, hotSpot, cursorMode);
-        weapon = GetComponentInChildren<Weapon>();
-        weapon.transform.localPosition = new Vector3(weapon.GetWeaponOffset(), 0f);
+        weapons = new List<Weapon>();
+        weapons.Add( pivot.GetComponentInChildren<Weapon>() );
+        weapons[weaponIndex].transform.localPosition = new Vector3(weapons[weaponIndex].GetWeaponOffset(), 0f);
         anim = GetComponent<Animator>();
     }
 
@@ -80,11 +82,11 @@ public class PlayerController : MonoBehaviour
             float zAng = pivot.rotation.eulerAngles.z;
             if (zAng <= 90f || zAng >= 270f)
             {
-                weapon.transform.localScale = new Vector3(1, 1, 1);
+                weapons[weaponIndex].transform.localScale = new Vector3(1, 1, 1);
             }
             else
             {
-                weapon.transform.localScale = new Vector3(1, -1, 1);
+                weapons[weaponIndex].transform.localScale = new Vector3(1, -1, 1);
             }
         }
 
@@ -92,47 +94,56 @@ public class PlayerController : MonoBehaviour
 
     private void FireControl()
     {
+        if (weapons[weaponIndex] = null)
+        {
+            weaponIndex = 0;
+            weapons[weaponIndex].gameObject.SetActive(true);
+        }
+
         if (reloadTimer <= 0f)
         {
             if (Input.GetButtonDown("Fire1") && hasAmmo)
             {
-                hasAmmo = weapon.Fire();
+                hasAmmo = weapons[weaponIndex].Fire();
             }
             else if (Input.GetButtonDown("Fire2"))
             {
-                reloadTimer = weapon.GetReloadTime();
+                reloadTimer = weapons[weaponIndex].GetReloadTime();
             }
         }
         else
         {
             //TODO: RELOAD ANIMATIONS
             reloadTimer -= Time.deltaTime;
-            weapon.AdjustReloadBar(reloadTimer);
+            weapons[weaponIndex].AdjustReloadBar(reloadTimer);
             if (reloadTimer <= 0f)
             {
-                weapon.Reload();
+                weapons[weaponIndex].Reload();
                 hasAmmo = true;
+            }
+        }
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.tag == "Gun")
+        {
+            if (weapons.Count > 1)
+            {
+                weapons[1].AddAmmunition(collision.GetComponent<Weapon>().GetAmmunitionCount());
+            }
+            else
+            {
+                collision.gameObject.transform.parent = pivot;
+                collision.gameObject.transform.localPosition = new Vector3(weapons[weaponIndex].GetWeaponOffset(), 0f, 0f);
+                weapons.Add(collision.GetComponent<Weapon>());
+                weapons[weaponIndex].gameObject.SetActive(false);
+                weaponIndex++;
+                weapons[weaponIndex].gameObject.SetActive(true);
             }
         }
     }
 
 }
 
-/*
-RaycastHit hit;
-Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        if (Physics.Raycast(ray, out hit))
-        {
-            turretBase.GetChild(0).LookAt(hit.point);
-        }
-
-RaycastHit hit;
-if (Physics.Raycast(barrel.position, barrel.TransformDirection(Vector3.up), out hit))
-{
-    Instantiate(hitFX, hit.point, Quaternion.identity);
-   if (hit.transform.GetComponent<EnemyHealth>())
-      
-    hit.transform.GetComponent<EnemyHealth>().ApplyDamage(cannonDamage);
-}
-*/
 

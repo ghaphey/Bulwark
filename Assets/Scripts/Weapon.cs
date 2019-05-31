@@ -32,6 +32,7 @@ public class Weapon : MonoBehaviour
         ammoPanel = GameObject.FindGameObjectWithTag("Ammo").GetComponent<RectTransform>();
         transform.localPosition = new Vector3(weaponOffset, 0f);
         reloadText = ammoPanel.GetComponentInChildren<Text>();
+        ResetReloadText();
         reloadBarWidth = ammoPanel.rect.width;
         reloadBar = ammoPanel.GetComponentInChildren<Slider>();
         reloadBar.gameObject.SetActive(false);
@@ -72,10 +73,28 @@ public class Weapon : MonoBehaviour
 
     public void Reload()
     {
-        reloadText.text = bullets.ToString();
+        ResetReloadText();
         reloadBar.gameObject.SetActive(false);
         ReloadAmmoPanel(currMag);
         currMag = magSize;
+    }
+
+    private void ResetReloadText()
+    {
+        if (bullets != -1)
+            reloadText.text = bullets.ToString();
+        else
+            reloadText.text = "Inf";
+    }
+
+    public void AddAmmunition(int add)
+    {
+        bullets += add;
+    }
+
+    public int GetAmmunitionCount()
+    {
+        return bullets;
     }
 
     public void AdjustReloadBar(float currTimer)
@@ -96,8 +115,10 @@ public class Weapon : MonoBehaviour
             ammoImages[currMag - 1].SetActive(false);
             currMag--;
             if (bullets != -1)
+            {
                 bullets--;
-            reloadText.text = bullets.ToString();
+                reloadText.text = bullets.ToString();
+            }
             GameObject shot = Instantiate(shotPrefab, transform) as GameObject;
             fireFx.Play();
             shot.transform.rotation = transform.rotation;
