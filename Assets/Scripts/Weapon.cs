@@ -24,7 +24,6 @@ public class Weapon : MonoBehaviour
     private List<GameObject> ammoImages = null;
     private Text reloadText = null;
     private float reloadBarWidth = 0f;
-    private Slider reloadBar = null;
     private ParticleSystem fireFx = null;
 
     void Start()
@@ -34,22 +33,37 @@ public class Weapon : MonoBehaviour
         reloadText = ammoPanel.GetComponentInChildren<Text>();
         ResetReloadText();
         reloadBarWidth = ammoPanel.rect.width;
-        reloadBar = ammoPanel.GetComponentInChildren<Slider>();
-        reloadBar.gameObject.SetActive(false);
         ammoImages = new List<GameObject>();
-        PopulateAmmoPanel(currMag);
+        PopulateAmmoPanel(0);
         currMag = magSize;
+        DeactivateAmmoPanel();
 
         fireFx = GetComponent<ParticleSystem>();
     }
 
-    private void PopulateAmmoPanel(int currIndex)
+    public void PopulateAmmoPanel(int currIndex)
     {
         for (int i = currIndex; i < magSize; i++)
         {
             ammoImages.Add(Instantiate(ammoImage, ammoPanel));
             RectTransform nAmmo = ammoImages[i].GetComponent<RectTransform>();
             nAmmo.Translate(new Vector3(widthOffset * -i * 1.25f, 0f));
+        }
+    }
+
+    public void DeactivateAmmoPanel()
+    {
+        for (int i = 0; i < currMag; i++)
+        {
+            ammoImages[i].SetActive(false);
+        }
+    }
+
+    public void ActivateAmmoPanel()
+    {
+        for (int i = 0; i < currMag; i++)
+        {
+            ammoImages[i].SetActive(true);
         }
     }
 
@@ -74,7 +88,6 @@ public class Weapon : MonoBehaviour
     public void Reload()
     {
         ResetReloadText();
-        reloadBar.gameObject.SetActive(false);
         ReloadAmmoPanel(currMag);
         currMag = magSize;
     }
@@ -97,10 +110,9 @@ public class Weapon : MonoBehaviour
         return bullets;
     }
 
-    public void AdjustReloadBar(float currTimer)
+    public float AdjustReloadBar(float currTimer)
     {
-        reloadBar.gameObject.SetActive(true);
-        reloadBar.value = currTimer / reloadTime;
+        return currTimer / reloadTime;
     }
 
     public bool Fire()
@@ -135,6 +147,10 @@ public class Weapon : MonoBehaviour
 
     private void DiscardWeapon()
     {
+        for (int i = 0; i < magSize; i++)
+        {
+            Destroy(ammoImages[i]);
+        }
         Destroy(gameObject);
     }
 }

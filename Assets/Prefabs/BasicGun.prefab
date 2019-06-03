@@ -89,9 +89,10 @@ GameObject:
   - component: {fileID: 3104103946730453707}
   - component: {fileID: 2286637474482540414}
   - component: {fileID: 9154327482363190898}
+  - component: {fileID: 5473148903524386630}
   m_Layer: 2
   m_Name: BasicGun
-  m_TagString: Untagged
+  m_TagString: Gun
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -126,6 +127,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   fireSpeed: 500
   magSize: 10
+  bullets: -1
   reloadTime: 3
   weaponOffset: 0.4
   shotPrefab: {fileID: 2924012622011402009, guid: 3a1d4db4ad49ca341bb1eb99d093eec3,
@@ -4857,6 +4859,32 @@ ParticleSystem:
         m_PostInfinity: 2
         m_RotationOrder: 4
     vectorLabel1_3: W
+--- !u!61 &5473148903524386630
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3104103946730453704}
+  m_Enabled: 0
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0.18025693, y: -0.06875718}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 0.45288235, y: 0.30582}
+  m_EdgeRadius: 0
 --- !u!1 &3104103946882331555
 GameObject:
   m_ObjectHideFlags: 0

@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
@@ -19,19 +20,23 @@ public class PlayerController : MonoBehaviour
     private Vector2 hotSpot = Vector2.zero;
 
     
-    private List<Weapon> weapons;
+    private List<Weapon> weapons = new List<Weapon>();
     private int weaponIndex = 0;
     private float reloadTimer = 0f;
     private bool hasAmmo = true;
     private Animator anim = null;
 
+    private Slider ammoPanel = null;
+
     void Start()
     {
         Cursor.SetCursor(cursorTex, hotSpot, cursorMode);
-        weapons = new List<Weapon>();
-        weapons.Add( pivot.GetComponentInChildren<Weapon>() );
+        weapons.Add(pivot.GetComponentInChildren<Weapon>());
         weapons[weaponIndex].transform.localPosition = new Vector3(weapons[weaponIndex].GetWeaponOffset(), 0f);
+        weapons[weaponIndex].ActivateAmmoPanel();
         anim = GetComponent<Animator>();
+        ammoPanel = GameObject.FindGameObjectWithTag("Ammo").GetComponentInChildren<Slider>();
+        ammoPanel.gameObject.SetActive(false);
     }
 
     void Update()
@@ -94,10 +99,11 @@ public class PlayerController : MonoBehaviour
 
     private void FireControl()
     {
-        if (weapons[weaponIndex] = null)
+        if (weapons[weaponIndex] == null)
         {
             weaponIndex = 0;
             weapons[weaponIndex].gameObject.SetActive(true);
+            weapons[weaponIndex].ActivateAmmoPanel();
         }
 
         if (reloadTimer <= 0f)
@@ -108,6 +114,7 @@ public class PlayerController : MonoBehaviour
             }
             else if (Input.GetButtonDown("Fire2"))
             {
+                ammoPanel.gameObject.SetActive(true);
                 reloadTimer = weapons[weaponIndex].GetReloadTime();
             }
         }
@@ -115,11 +122,12 @@ public class PlayerController : MonoBehaviour
         {
             //TODO: RELOAD ANIMATIONS
             reloadTimer -= Time.deltaTime;
-            weapons[weaponIndex].AdjustReloadBar(reloadTimer);
+            ammoPanel.value = weapons[weaponIndex].AdjustReloadBar(reloadTimer);
             if (reloadTimer <= 0f)
             {
                 weapons[weaponIndex].Reload();
                 hasAmmo = true;
+                ammoPanel.gameObject.SetActive(false);
             }
         }
     }
@@ -134,12 +142,21 @@ public class PlayerController : MonoBehaviour
             }
             else
             {
-                collision.gameObject.transform.parent = pivot;
-                collision.gameObject.transform.localPosition = new Vector3(weapons[weaponIndex].GetWeaponOffset(), 0f, 0f);
-                weapons.Add(collision.GetComponent<Weapon>());
-                weapons[weaponIndex].gameObject.SetActive(false);
-                weaponIndex++;
-                weapons[weaponIndex].gameObject.SetActive(true);
+                Weapon temp = collision.GetComponent<Weapon>();
+                if (temp != null)
+                {
+                    collision.gameObject.GetComponent<BoxCollider2D>().enabled = false;
+                    collision.gameObject.transform.parent = pivot;
+                    collision.gameObject.transform.localPosition = new Vector3(weapons[weaponIndex].GetWeaponOffset(), 0f, 0f);
+                    collision.gameObject.transform.localScale = weapons[weaponIndex].transform.localScale;
+                    collision.gameObject.transform.eulerAngles = new Vector3(0f, 0f, 0f);
+                    weapons.Add(temp);
+                    weapons[weaponIndex].DeactivateAmmoPanel();
+                    weapons[weaponIndex].gameObject.SetActive(false);
+                    weaponIndex++;
+                    weapons[weaponIndex].gameObject.SetActive(true);
+                    weapons[weaponIndex].ActivateAmmoPanel();
+                }
             }
         }
     }
