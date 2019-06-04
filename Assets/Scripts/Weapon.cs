@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class Weapon : MonoBehaviour
 {
@@ -19,37 +18,29 @@ public class Weapon : MonoBehaviour
     //[SerializeField] private float heightOffset = 60f;
 
 
-    private RectTransform ammoPanel = null;
+    //private RectTransform ammoPanel = null;
     private int currMag = 0;
-    private List<GameObject> ammoImages = null;
-    private Text reloadText = null;
-    private float reloadBarWidth = 0f;
+    //private List<GameObject> ammoImages = null;
+    //private Text reloadText = null;
+    //private float reloadBarWidth = 0f;
     private ParticleSystem fireFx = null;
 
     void Start()
     {
-        ammoPanel = GameObject.FindGameObjectWithTag("Ammo").GetComponent<RectTransform>();
-        transform.localPosition = new Vector3(weaponOffset, 0f);
-        reloadText = ammoPanel.GetComponentInChildren<Text>();
-        ResetReloadText();
-        reloadBarWidth = ammoPanel.rect.width;
-        ammoImages = new List<GameObject>();
-        PopulateAmmoPanel(0);
+        //ammoPanel = GameObject.FindGameObjectWithTag("Ammo").GetComponent<RectTransform>();
+        //transform.localPosition = new Vector3(weaponOffset, 0f);
+        
+        //reloadBarWidth = ammoPanel.rect.width;
+        //ammoImages = new List<GameObject>();
+        //PopulateAmmoPanel(0);
         currMag = magSize;
         DeactivateAmmoPanel();
 
         fireFx = GetComponent<ParticleSystem>();
+        reloadText = ammoPanel.GetComponentInChildren<Text>();
+        ResetReloadText();
     }
 
-    public void PopulateAmmoPanel(int currIndex)
-    {
-        for (int i = currIndex; i < magSize; i++)
-        {
-            ammoImages.Add(Instantiate(ammoImage, ammoPanel));
-            RectTransform nAmmo = ammoImages[i].GetComponent<RectTransform>();
-            nAmmo.Translate(new Vector3(widthOffset * -i * 1.25f, 0f));
-        }
-    }
 
     public void DeactivateAmmoPanel()
     {
@@ -69,7 +60,16 @@ public class Weapon : MonoBehaviour
 
     private void ReloadAmmoPanel(int currIndex)
     {
-        for (int i = currIndex; i < magSize; i++)
+        int numLoad = 0;
+        if (bullets > magSize || bullets == -1)
+            numLoad = magSize;
+        else
+        {
+            numLoad = bullets;
+            if (numLoad == currMag)
+                return;
+        }
+        for (int i = currIndex; i < numLoad; i++)
         {
             ammoImages[i].SetActive(true);
         }
@@ -89,7 +89,10 @@ public class Weapon : MonoBehaviour
     {
         ResetReloadText();
         ReloadAmmoPanel(currMag);
-        currMag = magSize;
+        if (bullets > magSize)
+            currMag = magSize;
+        else
+            currMag = bullets;
     }
 
     private void ResetReloadText()
@@ -126,11 +129,7 @@ public class Weapon : MonoBehaviour
         {
             ammoImages[currMag - 1].SetActive(false);
             currMag--;
-            if (bullets != -1)
-            {
-                bullets--;
-                reloadText.text = bullets.ToString();
-            }
+            
             GameObject shot = Instantiate(shotPrefab, transform) as GameObject;
             fireFx.Play();
             shot.transform.rotation = transform.rotation;
@@ -139,8 +138,13 @@ public class Weapon : MonoBehaviour
             shot.GetComponent<Rigidbody2D>().AddRelativeForce(new Vector2(fireSpeed, 0.0f));
             shot.transform.SetParent(transform.parent.parent);
             // set parent as world
-            if (bullets == 0)
-                DiscardWeapon();
+            if (bullets != -1)
+            {
+                bullets--;
+                reloadText.text = bullets.ToString();
+                if (bullets == 0)
+                    DiscardWeapon();
+            }
             return true;
         }
     }

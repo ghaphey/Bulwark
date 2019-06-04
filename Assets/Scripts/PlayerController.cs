@@ -22,11 +22,11 @@ public class PlayerController : MonoBehaviour
     
     private List<Weapon> weapons = new List<Weapon>();
     private int weaponIndex = 0;
-    private float reloadTimer = 0f;
-    private bool hasAmmo = true;
+    //private float reloadTimer = 0f;
+    //private bool hasAmmo = true;
     private Animator anim = null;
 
-    private Slider ammoPanel = null;
+    //private Slider ammoPanel = null;
 
     void Start()
     {
@@ -78,7 +78,7 @@ public class PlayerController : MonoBehaviour
 
         Ray ray = Camera.main.ScreenPointToRay(mousePos);
         RaycastHit2D hit = Physics2D.Raycast(ray.origin, ray.direction);
-        if (hit)
+        if (hit && weapons[weaponIndex] != null)
         {
             // TODO: Messy, must be a better solution. Also buggy
 
@@ -101,6 +101,7 @@ public class PlayerController : MonoBehaviour
     {
         if (weapons[weaponIndex] == null)
         {
+            weapons.RemoveAt(weaponIndex);
             weaponIndex = 0;
             weapons[weaponIndex].gameObject.SetActive(true);
             weapons[weaponIndex].ActivateAmmoPanel();
@@ -139,6 +140,7 @@ public class PlayerController : MonoBehaviour
             if (weapons.Count > 1)
             {
                 weapons[1].AddAmmunition(collision.GetComponent<Weapon>().GetAmmunitionCount());
+                Destroy(collision.gameObject);
             }
             else
             {
@@ -148,14 +150,15 @@ public class PlayerController : MonoBehaviour
                     collision.gameObject.GetComponent<BoxCollider2D>().enabled = false;
                     collision.gameObject.transform.parent = pivot;
                     collision.gameObject.transform.localPosition = new Vector3(weapons[weaponIndex].GetWeaponOffset(), 0f, 0f);
-                    collision.gameObject.transform.localScale = weapons[weaponIndex].transform.localScale;
-                    collision.gameObject.transform.eulerAngles = new Vector3(0f, 0f, 0f);
+                    collision.gameObject.transform.localRotation = Quaternion.identity;
                     weapons.Add(temp);
                     weapons[weaponIndex].DeactivateAmmoPanel();
                     weapons[weaponIndex].gameObject.SetActive(false);
                     weaponIndex++;
                     weapons[weaponIndex].gameObject.SetActive(true);
                     weapons[weaponIndex].ActivateAmmoPanel();
+                    hasAmmo = true;
+                    ammoPanel.gameObject.SetActive(false);
                 }
             }
         }
