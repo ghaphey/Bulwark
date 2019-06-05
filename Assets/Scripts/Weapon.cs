@@ -34,45 +34,8 @@ public class Weapon : MonoBehaviour
         //ammoImages = new List<GameObject>();
         //PopulateAmmoPanel(0);
         currMag = magSize;
-        DeactivateAmmoPanel();
 
         fireFx = GetComponent<ParticleSystem>();
-        reloadText = ammoPanel.GetComponentInChildren<Text>();
-        ResetReloadText();
-    }
-
-
-    public void DeactivateAmmoPanel()
-    {
-        for (int i = 0; i < currMag; i++)
-        {
-            ammoImages[i].SetActive(false);
-        }
-    }
-
-    public void ActivateAmmoPanel()
-    {
-        for (int i = 0; i < currMag; i++)
-        {
-            ammoImages[i].SetActive(true);
-        }
-    }
-
-    private void ReloadAmmoPanel(int currIndex)
-    {
-        int numLoad = 0;
-        if (bullets > magSize || bullets == -1)
-            numLoad = magSize;
-        else
-        {
-            numLoad = bullets;
-            if (numLoad == currMag)
-                return;
-        }
-        for (int i = currIndex; i < numLoad; i++)
-        {
-            ammoImages[i].SetActive(true);
-        }
     }
 
     public float GetReloadTime()
@@ -85,22 +48,32 @@ public class Weapon : MonoBehaviour
         return weaponOffset;
     }
 
+    public float GetWidthOffset()
+    {
+        return widthOffset;
+    }
+
+    public GameObject GetAmmoImage()
+    {
+        return ammoImage;
+    }
+
+    public int GetMagSize()
+    {
+        return magSize;
+    }
+
+    public int GetCurrMag()
+    {
+        return currMag;
+    }
+
     public void Reload()
     {
-        ResetReloadText();
-        ReloadAmmoPanel(currMag);
-        if (bullets > magSize)
+        if (bullets > magSize || bullets == -1)
             currMag = magSize;
         else
             currMag = bullets;
-    }
-
-    private void ResetReloadText()
-    {
-        if (bullets != -1)
-            reloadText.text = bullets.ToString();
-        else
-            reloadText.text = "Inf";
     }
 
     public void AddAmmunition(int add)
@@ -118,16 +91,10 @@ public class Weapon : MonoBehaviour
         return currTimer / reloadTime;
     }
 
-    public bool Fire()
+    public int Fire()
     {
-        if (currMag <= 0)
+        if (currMag > 0)
         {
-            reloadText.text = "RELOAD";
-            return false;
-        }
-        else
-        {
-            ammoImages[currMag - 1].SetActive(false);
             currMag--;
             
             GameObject shot = Instantiate(shotPrefab, transform) as GameObject;
@@ -141,20 +108,15 @@ public class Weapon : MonoBehaviour
             if (bullets != -1)
             {
                 bullets--;
-                reloadText.text = bullets.ToString();
                 if (bullets == 0)
                     DiscardWeapon();
             }
-            return true;
         }
+        return currMag;
     }
 
     private void DiscardWeapon()
     {
-        for (int i = 0; i < magSize; i++)
-        {
-            Destroy(ammoImages[i]);
-        }
         Destroy(gameObject);
     }
 }

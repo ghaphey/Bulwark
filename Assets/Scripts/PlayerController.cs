@@ -22,9 +22,10 @@ public class PlayerController : MonoBehaviour
     
     private List<Weapon> weapons = new List<Weapon>();
     private int weaponIndex = 0;
-    //private float reloadTimer = 0f;
-    //private bool hasAmmo = true;
+    private float reloadTimer = 0f;
+    private int hasAmmo = 0;
     private Animator anim = null;
+    private AmmoUI ammoUI = null;
 
     //private Slider ammoPanel = null;
 
@@ -33,10 +34,14 @@ public class PlayerController : MonoBehaviour
         Cursor.SetCursor(cursorTex, hotSpot, cursorMode);
         weapons.Add(pivot.GetComponentInChildren<Weapon>());
         weapons[weaponIndex].transform.localPosition = new Vector3(weapons[weaponIndex].GetWeaponOffset(), 0f);
-        weapons[weaponIndex].ActivateAmmoPanel();
+        //weapons[weaponIndex].ActivateAmmoPanel();
+
         anim = GetComponent<Animator>();
-        ammoPanel = GameObject.FindGameObjectWithTag("Ammo").GetComponentInChildren<Slider>();
-        ammoPanel.gameObject.SetActive(false);
+        hasAmmo = weapons[weaponIndex].GetCurrMag();
+        ammoUI = GameObject.FindGameObjectWithTag("Ammo").GetComponentInChildren<AmmoUI>();
+        ammoUI.ResetAmmoPanel(weapons[weaponIndex].GetAmmoImage(),
+                              weapons[weaponIndex].GetMagSize(),
+                              weapons[weaponIndex].GetWidthOffset());
     }
 
     void Update()
@@ -45,7 +50,6 @@ public class PlayerController : MonoBehaviour
         UpdateWeaponDirection();
         FireControl();
     }
-
 
     private void UpdateMovement()
     {
@@ -104,18 +108,27 @@ public class PlayerController : MonoBehaviour
             weapons.RemoveAt(weaponIndex);
             weaponIndex = 0;
             weapons[weaponIndex].gameObject.SetActive(true);
-            weapons[weaponIndex].ActivateAmmoPanel();
+            ammoUI.ResetAmmoPanel(weapons[weaponIndex].GetAmmoImage(),
+                                          weapons[weaponIndex].GetMagSize(),
+                                          weapons[weaponIndex].GetWidthOffset());
         }
 
         if (reloadTimer <= 0f)
         {
-            if (Input.GetButtonDown("Fire1") && hasAmmo)
+            if (Input.GetButtonDown("Fire1") && hasAmmo > 0)
             {
                 hasAmmo = weapons[weaponIndex].Fire();
+                ammoUI.UsedAmmo(hasAmmo);
+                if ( hasAmmo <= 0)
+                    ammoUI.SetText("RELOAD");
+                else
+                {
+                    SetAmmoCount();
+                }
             }
             else if (Input.GetButtonDown("Fire2"))
             {
-                ammoPanel.gameObject.SetActive(true);
+                ammoUI.SetText("Reloading...");
                 reloadTimer = weapons[weaponIndex].GetReloadTime();
             }
         }
@@ -123,14 +136,24 @@ public class PlayerController : MonoBehaviour
         {
             //TODO: RELOAD ANIMATIONS
             reloadTimer -= Time.deltaTime;
-            ammoPanel.value = weapons[weaponIndex].AdjustReloadBar(reloadTimer);
+            ammoUI.AdjustReloadSlider(weapons[weaponIndex].AdjustReloadBar(reloadTimer));
             if (reloadTimer <= 0f)
             {
+                SetAmmoCount();
                 weapons[weaponIndex].Reload();
-                hasAmmo = true;
-                ammoPanel.gameObject.SetActive(false);
+                hasAmmo = weapons[weaponIndex].GetCurrMag();
+                ammoUI.ReloadAmmo(hasAmmo);
             }
         }
+    }
+
+    private void SetAmmoCount()
+    {
+        int count = weapons[weaponIndex].GetAmmunitionCount();
+        if (count != -1)
+            ammoUI.SetText(count.ToString());
+        else
+            ammoUI.SetText("Inf");
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -152,13 +175,14 @@ public class PlayerController : MonoBehaviour
                     collision.gameObject.transform.localPosition = new Vector3(weapons[weaponIndex].GetWeaponOffset(), 0f, 0f);
                     collision.gameObject.transform.localRotation = Quaternion.identity;
                     weapons.Add(temp);
-                    weapons[weaponIndex].DeactivateAmmoPanel();
                     weapons[weaponIndex].gameObject.SetActive(false);
                     weaponIndex++;
                     weapons[weaponIndex].gameObject.SetActive(true);
-                    weapons[weaponIndex].ActivateAmmoPanel();
-                    hasAmmo = true;
-                    ammoPanel.gameObject.SetActive(false);
+                    hasAmmo = weapons[weaponIndex].GetCurrMag();
+                    ammoUI.ResetAmmoPanel(weapons[weaponIndex].GetAmmoImage(),
+                              hasAmmo,
+                              weapons[weaponIndex].GetWidthOffset());
+
                 }
             }
         }

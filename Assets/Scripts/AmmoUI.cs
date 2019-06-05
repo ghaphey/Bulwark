@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class AmmoUI : MonoBehaviour
 {
     [SerializeField] private Slider reloadBar = null;
+    [SerializeField] private Image reloadBarImage = null;
     [SerializeField] private Text ammoText = null;
 
     private GameObject currAmmoImage = null;
@@ -15,7 +16,7 @@ public class AmmoUI : MonoBehaviour
     void Start()
     {
         ammoText.text = "Inf";
-        reloadBar.enabled = false;
+        reloadBarImage.enabled = false;
     }
 
     public void SetAmmoImage(GameObject image)
@@ -42,16 +43,28 @@ public class AmmoUI : MonoBehaviour
         }
     }
 
-    public void ReloadAmmo(int numReloaded)
+    public void ReloadAmmo( int numReloaded)
     {
         for(int i = 0; i < numReloaded; i++)
         {
             ammoList[i].SetActive(true);
         }
+        reloadBarImage.enabled = false;
     }
 
     public void UsedAmmo(int usedIndex)
     {
         ammoList[usedIndex].SetActive(false);
+    }
+
+    public void SetText(string newText)
+    {
+        ammoText.text = newText;
+    }
+
+    public void AdjustReloadSlider(float newValue)
+    {
+        reloadBarImage.enabled = true;
+        reloadBar.value = newValue;
     }
 }
