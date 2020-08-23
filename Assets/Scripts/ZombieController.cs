@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -13,7 +14,7 @@ public class ZombieController : MonoBehaviour
     private Health myHealth;
     private Rigidbody2D rb;
 
-    private bool playerTeamContact = false;
+    private int playerTeamContact = 0;
     private bool attacking = false;
 
     private float animTimer = 0f;
@@ -21,6 +22,8 @@ public class ZombieController : MonoBehaviour
 
     private Animator anim = null;
 
+    private int maneuver = 0;
+    private int updown = 1;
 
     void Start()
     {
@@ -47,7 +50,7 @@ public class ZombieController : MonoBehaviour
 
     private void Move()
     {
-        if (playerTeamContact == true)
+        if (playerTeamContact > 0)
         {
             anim.SetBool("moving", false);
             return;
@@ -55,8 +58,11 @@ public class ZombieController : MonoBehaviour
         else
         {
             anim.SetBool("moving", true);
-            rb.MovePosition(new Vector3(transform.position.x + speed * Time.deltaTime, transform.position.y));
-            //rb.AddForce(new Vector2(transform.position.x + speed * Time.deltaTime, transform.position.y));
+            if(maneuver <= 0)
+                rb.MovePosition(new Vector3(transform.position.x + speed * Time.deltaTime, transform.position.y));
+            else
+                rb.MovePosition(new Vector3(transform.position.x + speed * Time.deltaTime, transform.position.y + speed * Time.deltaTime * updown));
+
         }
     }
 
@@ -107,27 +113,35 @@ public class ZombieController : MonoBehaviour
         if (collision.transform.tag == "Player")
         {
             Damage damage = collision.gameObject.GetComponent<Damage>();
-            if (damage != null)
-            {
-                playerTeamContact = false;
-            }
-            else
+            if (damage == null)
             {
                 attacking = true;
-                playerTeamContact = true;
+                playerTeamContact++;
             }
-        }   
+        }
+        
+        if (collision.transform.tag == "Enemy")
+        {
+            maneuver++;
+            if (collision.transform.position.y > transform.position.y)
+                updown = -1;
+            else
+                updown = 1;
+        }
     }
 
     private void OnCollisionExit2D(Collision2D collision)
     {
         if (collision.transform.tag == "Player")
         {
-            playerTeamContact = false;
+            playerTeamContact--;
             attacking = false;
             attackTimer = 0f;
             animTimer = 0f;
         }
+        
+        if (collision.transform.tag == "Enemy")
+            maneuver--;
     }
 
 

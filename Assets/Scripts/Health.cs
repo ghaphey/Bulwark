@@ -7,6 +7,8 @@ public class Health : MonoBehaviour
 {
     [SerializeField] private int totalHealth = 10;
     [SerializeField] private Slider healthSlider = null;
+    [SerializeField] private string eventName = "Hit";
+    [SerializeField] private Animator healthBarAnimator;
     //[SerializeField] private Text healthText = null;
 
     private int currHealth;
@@ -17,11 +19,12 @@ public class Health : MonoBehaviour
     void Start()
     {
         currHealth = totalHealth;
-
     }
 
     public void RemoveHealth(int damage)
     {
+        if(healthBarAnimator != null)
+            healthBarAnimator.SetTrigger(eventName);
         currHealth -= damage;
         if (currHealth <= 0)
             alive = false;

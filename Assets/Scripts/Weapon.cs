@@ -8,6 +8,7 @@ public class Weapon : MonoBehaviour
     [Header("Weapon Properties")]
     [SerializeField] public bool automatic = false;
     [SerializeField] private float fireSpeed = 500f;
+    [SerializeField] private float fireRate = 0.5f;
     [SerializeField] private int magSize = 10;
     [SerializeField] private int bullets = -1;
     [SerializeField] private float reloadTime = 5f;
@@ -47,6 +48,11 @@ public class Weapon : MonoBehaviour
     public float GetWeaponOffset()
     {
         return weaponOffset;
+    }
+
+    public float GetFireRate()
+    {
+        return fireRate;
     }
 
     public float GetWidthOffset()

@@ -23,6 +23,7 @@ public class PlayerController : MonoBehaviour
     private List<Weapon> weapons = new List<Weapon>();
     private int weaponIndex = 0;
     private float reloadTimer = 0f;
+    private float fireRateCounter = 0f;
     private int hasAmmo = 0;
     private Animator anim = null;
     private AmmoUI ammoUI = null;
@@ -42,6 +43,7 @@ public class PlayerController : MonoBehaviour
         ammoUI.ResetAmmoPanel(weapons[weaponIndex].GetAmmoImage(),
                               weapons[weaponIndex].GetMagSize(),
                               weapons[weaponIndex].GetWidthOffset());
+        fireRateCounter = weapons[weaponIndex].GetFireRate();
     }
 
     void Update()
@@ -105,33 +107,40 @@ public class PlayerController : MonoBehaviour
     {
         if (reloadTimer <= 0f)
         {
-            if (Input.GetButtonDown("Fire1") && hasAmmo > 0)
-            {
-                hasAmmo = weapons[weaponIndex].Fire();
-                ammoUI.UsedAmmo(hasAmmo);
-                if(hasAmmo == -1)
-                {
-                    weapons.RemoveAt(weaponIndex);
-                    weaponIndex = 0;
-                    weapons[weaponIndex].gameObject.SetActive(true);
-                    ammoUI.ResetAmmoPanel(weapons[weaponIndex].GetAmmoImage(),
-                                                  weapons[weaponIndex].GetMagSize(),
-                                                  weapons[weaponIndex].GetWidthOffset());
-                    hasAmmo = weapons[weaponIndex].GetCurrMag();
-                    SetAmmoCount();
-                }
-                else if ( hasAmmo <= 0)
-                    ammoUI.SetText("RELOAD");
-                else
-                {
-                    SetAmmoCount();
-                }
-            }
-            else if (Input.GetButtonDown("Fire2"))
+            if (Input.GetButtonDown("Fire2"))
             {
                 ammoUI.SetText("Reloading...");
                 reloadTimer = weapons[weaponIndex].GetReloadTime();
             }
+            else if (fireRateCounter > weapons[weaponIndex].GetFireRate())
+            {
+                if (hasAmmo > 0 && (Input.GetButtonDown("Fire1") || (Input.GetButton("Fire1") && weapons[weaponIndex].automatic)))
+                {
+                    hasAmmo = weapons[weaponIndex].Fire();
+                    ammoUI.UsedAmmo(hasAmmo);
+                    if (hasAmmo == -1)
+                    {
+                        weapons.RemoveAt(weaponIndex);
+                        weaponIndex = 0;
+                        weapons[weaponIndex].gameObject.SetActive(true);
+                        ammoUI.ResetAmmoPanel(weapons[weaponIndex].GetAmmoImage(),
+                                                      weapons[weaponIndex].GetMagSize(),
+                                                      weapons[weaponIndex].GetWidthOffset());
+                        hasAmmo = weapons[weaponIndex].GetCurrMag();
+                        SetAmmoCount();
+                        fireRateCounter = weapons[weaponIndex].GetFireRate();
+                    }
+                    else if (hasAmmo <= 0)
+                        ammoUI.SetText("RELOAD");
+                    else
+                    {
+                        SetAmmoCount();
+                    }
+                    fireRateCounter = 0f;
+                }
+            }
+            else
+                fireRateCounter += Time.deltaTime;
         }
         else
         {
@@ -184,6 +193,7 @@ public class PlayerController : MonoBehaviour
                               hasAmmo,
                               weapons[weaponIndex].GetWidthOffset());
                     SetAmmoCount();
+                    fireRateCounter = weapons[weaponIndex].GetFireRate();
                 }
             }
         }

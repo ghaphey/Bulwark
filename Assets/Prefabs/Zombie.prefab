@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 967420324}
   - component: {fileID: 967420323}
   - component: {fileID: 967420322}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Attack
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -72,6 +72,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   damage: 1
   projectile: 0
+  hitFXPrefab: {fileID: 0}
 --- !u!1 &715684170206695591
 GameObject:
   m_ObjectHideFlags: 0
@@ -86,7 +87,7 @@ GameObject:
   - component: {fileID: 715684170206695586}
   - component: {fileID: 715684170206695587}
   - component: {fileID: 757726135}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Zombie
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -170,6 +171,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   totalHealth: 2
   healthSlider: {fileID: 0}
+  eventName: Hit
+  healthBarAnimator: {fileID: 0}
   currHealthPercent: 1
 --- !u!114 &715684170206695587
 MonoBehaviour:
@@ -216,7 +219,7 @@ GameObject:
   m_Component:
   - component: {fileID: 715684170527116944}
   - component: {fileID: 715684170527116945}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: zombie_tilesheet_0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
