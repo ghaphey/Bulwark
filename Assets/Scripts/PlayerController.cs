@@ -51,6 +51,7 @@ public class PlayerController : MonoBehaviour
         UpdateMovement();
         UpdateWeaponDirection();
         FireControl();
+        SwitchWeapons();
     }
 
     private void UpdateMovement()
@@ -156,6 +157,28 @@ public class PlayerController : MonoBehaviour
             }
         }
     }
+    private void SwitchWeapons()
+    {
+        if(Input.GetKeyDown(KeyCode.Q) || reloadTimer <= 0f)
+        {
+            if(weapons.Count > 1)
+            {
+                weapons[weaponIndex].gameObject.SetActive(false);
+                weaponIndex++;
+                if (weaponIndex + 1 > weapons.Count)
+                    weaponIndex = 0;
+                weapons[weaponIndex].gameObject.SetActive(true);
+                hasAmmo = weapons[weaponIndex].GetMagSize();
+                ammoUI.ResetAmmoPanel(weapons[weaponIndex].GetAmmoImage(),
+                          hasAmmo,
+                          weapons[weaponIndex].GetWidthOffset(),
+                          weapons[weaponIndex].GetCurrMag());
+                SetAmmoCount();
+                fireRateCounter = weapons[weaponIndex].GetFireRate();
+            }
+        }
+    }
+
 
     private void SetAmmoCount()
     {
@@ -188,7 +211,7 @@ public class PlayerController : MonoBehaviour
                     weapons[weaponIndex].gameObject.SetActive(false);
                     weaponIndex++;
                     weapons[weaponIndex].gameObject.SetActive(true);
-                    hasAmmo = weapons[weaponIndex].GetCurrMag();
+                    hasAmmo = weapons[weaponIndex].GetMagSize();
                     ammoUI.ResetAmmoPanel(weapons[weaponIndex].GetAmmoImage(),
                               hasAmmo,
                               weapons[weaponIndex].GetWidthOffset());

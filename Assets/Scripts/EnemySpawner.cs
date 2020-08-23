@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+public delegate void NextWave(int waveNum);
+
 public class EnemySpawner : MonoBehaviour
 {
     [SerializeField] private Text waveCount = null;
@@ -18,8 +20,9 @@ public class EnemySpawner : MonoBehaviour
     [SerializeField] private float spawnRateFloor = 0.2f;
     [SerializeField] private int spawnStepIncr = 5;
 
+    public event NextWave nextWave;
 
-
+    public static EnemySpawner enemySpawner;
 
     //[SerializeField] public int currLevel = 1;
 
@@ -33,6 +36,11 @@ public class EnemySpawner : MonoBehaviour
     //      which divides the enemys into tiers based on index of the array. will spawn enemies
     //      at a calculated rate based on index, the calculation rates will change based on the 
     //      wave number
+
+    private void Awake()
+    {
+        enemySpawner = this;
+    }
 
     private void Start()
     {
@@ -53,6 +61,8 @@ public class EnemySpawner : MonoBehaviour
                 currSpawnNum = 0;
                 currWave++;
                 waveCount.text = currWave.ToString();
+                if (nextWave != null)
+                    nextWave(currWave);
                 // TODO: WAVE indication animation or noise
                 waveSpawnNum += spawnStepIncr;
                 spawnRateModifier -= spawnRateStepIncr;

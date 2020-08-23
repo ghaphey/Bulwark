@@ -24,7 +24,7 @@ public class AmmoUI : MonoBehaviour
         currAmmoImage = image;
     }
 
-    public void ResetAmmoPanel(GameObject ammoImage, int newMagSize, float widthOffset)
+    public void ResetAmmoPanel(GameObject ammoImage, int newMagSize, float widthOffset, int currMag = -1)
     {
         if (ammoList.Count > 0)
         {
@@ -40,6 +40,11 @@ public class AmmoUI : MonoBehaviour
             ammoList.Add(Instantiate(ammoImage, transform));
             RectTransform nAmmo = ammoList[i].GetComponent<RectTransform>();
             nAmmo.Translate(new Vector3(widthOffset * -i * 1.25f, 0f));
+        }
+        if(currMag != -1)
+        for (int i = currMag; i < newMagSize; i++)
+        {
+                ammoList[i].SetActive(false);
         }
     }
 
