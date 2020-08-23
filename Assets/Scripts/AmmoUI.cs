@@ -30,9 +30,9 @@ public class AmmoUI : MonoBehaviour
         {
             foreach (GameObject a in ammoList)
             {
-                ammoList.Remove(a);
                 Destroy(a);
             }
+            ammoList.Clear();
         }
         currAmmoImage = ammoImage;
         for (int i = 0; i < newMagSize; i++)
@@ -54,7 +54,8 @@ public class AmmoUI : MonoBehaviour
 
     public void UsedAmmo(int usedIndex)
     {
-        ammoList[usedIndex].SetActive(false);
+        if(usedIndex >= 0)
+            ammoList[usedIndex].SetActive(false);
     }
 
     public void SetText(string newText)

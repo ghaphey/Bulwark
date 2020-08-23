@@ -5,12 +5,10 @@ using UnityEngine;
 public class Damage : MonoBehaviour
 {
     [SerializeField] private int damage = 1;
-    //[SerializeField] private float hitRate = 10;
     [SerializeField] public bool projectile = false;
+    [SerializeField] private GameObject hitFXPrefab;
 
-   // private float count = 0f;
     private Health collidedHealth = null;
-    private ParticleSystem hitFx = null;
 
     private void Start()
     {
@@ -18,8 +16,6 @@ public class Damage : MonoBehaviour
         Collider2D collider = GetComponent<Collider2D>();
         if (collider == null)
             print(gameObject.name + ": no collider");
-
-        hitFx = GetComponent<ParticleSystem>();
     }
 
     public int GetDamage()
@@ -34,12 +30,14 @@ public class Damage : MonoBehaviour
         {
             //print(collision.gameObject.name + " hit by " + gameObject.name);
             collidedHealth.RemoveHealth(damage);
-            if (hitFx != null)
-                hitFx.Play();
-            //TODO: not playing the particle system properly
+            if (hitFXPrefab != null)
+            {
+                GameObject newFX = Instantiate(hitFXPrefab);
+                newFX.transform.position = transform.position;
+                newFX.GetComponent<ParticleSystem>().Play();
+                Destroy(newFX, 1.5f);
+            }
         }
-        //else
-        //    collidedHealth = null;
         if (projectile)
             Destroy(gameObject);
     }
@@ -49,25 +47,8 @@ public class Damage : MonoBehaviour
         collidedHealth = collision.gameObject.GetComponent<Health>();
         if (collidedHealth != null && (collision.gameObject.tag != gameObject.tag))
         {
-            //print(collision.gameObject.name + " hit by " + gameObject.name);
             collidedHealth.RemoveHealth(damage);
         }
     }
-    
-
-    /*    private void OnCollisionStay2D(Collision2D collision)
-        {
-            // TODO, NEED TO CHANGE AS THE STOP MOVEMENT IS INTERRUPTING THE CONST ATTACKS
-            if (collidedHealth != null && (collision.gameObject.tag != gameObject.tag))
-            {
-                count += Time.deltaTime;
-                if (count >= hitRate)
-                {
-                    //print(collision.gameObject.name + " hit by " + gameObject.name);
-                    collidedHealth.RemoveHealth(damage);
-                    count = 0f;
-                }
-            }
-        } */
 
 }

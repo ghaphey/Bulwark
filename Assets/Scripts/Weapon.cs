@@ -5,7 +5,8 @@ using UnityEngine;
 
 public class Weapon : MonoBehaviour
 {
-    [Header ("Weapon Properties")]
+    [Header("Weapon Properties")]
+    [SerializeField] public bool automatic = false;
     [SerializeField] private float fireSpeed = 500f;
     [SerializeField] private int magSize = 10;
     [SerializeField] private int bullets = -1;
@@ -109,7 +110,10 @@ public class Weapon : MonoBehaviour
             {
                 bullets--;
                 if (bullets == 0)
+                {
                     DiscardWeapon();
+                    return -1;
+                }
             }
         }
         return currMag;

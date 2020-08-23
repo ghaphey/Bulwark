@@ -103,23 +103,24 @@ public class PlayerController : MonoBehaviour
 
     private void FireControl()
     {
-        if (weapons[weaponIndex] == null)
-        {
-            weapons.RemoveAt(weaponIndex);
-            weaponIndex = 0;
-            weapons[weaponIndex].gameObject.SetActive(true);
-            ammoUI.ResetAmmoPanel(weapons[weaponIndex].GetAmmoImage(),
-                                          weapons[weaponIndex].GetMagSize(),
-                                          weapons[weaponIndex].GetWidthOffset());
-        }
-
         if (reloadTimer <= 0f)
         {
             if (Input.GetButtonDown("Fire1") && hasAmmo > 0)
             {
                 hasAmmo = weapons[weaponIndex].Fire();
                 ammoUI.UsedAmmo(hasAmmo);
-                if ( hasAmmo <= 0)
+                if(hasAmmo == -1)
+                {
+                    weapons.RemoveAt(weaponIndex);
+                    weaponIndex = 0;
+                    weapons[weaponIndex].gameObject.SetActive(true);
+                    ammoUI.ResetAmmoPanel(weapons[weaponIndex].GetAmmoImage(),
+                                                  weapons[weaponIndex].GetMagSize(),
+                                                  weapons[weaponIndex].GetWidthOffset());
+                    hasAmmo = weapons[weaponIndex].GetCurrMag();
+                    SetAmmoCount();
+                }
+                else if ( hasAmmo <= 0)
                     ammoUI.SetText("RELOAD");
                 else
                 {
@@ -182,7 +183,7 @@ public class PlayerController : MonoBehaviour
                     ammoUI.ResetAmmoPanel(weapons[weaponIndex].GetAmmoImage(),
                               hasAmmo,
                               weapons[weaponIndex].GetWidthOffset());
-
+                    SetAmmoCount();
                 }
             }
         }
