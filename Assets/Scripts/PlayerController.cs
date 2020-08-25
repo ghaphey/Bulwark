@@ -27,7 +27,6 @@ public class PlayerController : MonoBehaviour
     private int hasAmmo = 0;
     private Animator anim = null;
     private AmmoUI ammoUI = null;
-
     //private Slider ammoPanel = null;
 
     void Start()
@@ -52,6 +51,7 @@ public class PlayerController : MonoBehaviour
         UpdateWeaponDirection();
         FireControl();
         SwitchWeapons();
+        
     }
 
     private void UpdateMovement()
@@ -159,7 +159,7 @@ public class PlayerController : MonoBehaviour
     }
     private void SwitchWeapons()
     {
-        if(Input.GetKeyDown(KeyCode.Q) || reloadTimer <= 0f)
+        if(Input.GetKeyDown(KeyCode.Q) && reloadTimer <= 0f)
         {
             if(weapons.Count > 1)
             {
