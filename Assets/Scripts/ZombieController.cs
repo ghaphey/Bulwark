@@ -59,9 +59,9 @@ public class ZombieController : MonoBehaviour
         {
             anim.SetBool("moving", true);
             if(maneuver <= 0)
-                rb.MovePosition(new Vector3(transform.position.x + speed * Time.deltaTime, transform.position.y));
+                rb.MovePosition(new Vector3(transform.position.x + speed * Time.fixedDeltaTime, transform.position.y));
             else
-                rb.MovePosition(new Vector3(transform.position.x + speed * Time.deltaTime, transform.position.y + speed * Time.deltaTime * updown));
+                rb.MovePosition(new Vector3(transform.position.x + speed * Time.fixedDeltaTime, transform.position.y + speed * Time.fixedDeltaTime * updown));
 
         }
     }

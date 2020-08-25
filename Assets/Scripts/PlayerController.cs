@@ -43,6 +43,7 @@ public class PlayerController : MonoBehaviour
                               weapons[weaponIndex].GetMagSize(),
                               weapons[weaponIndex].GetWidthOffset());
         fireRateCounter = weapons[weaponIndex].GetFireRate();
+        reloadTimer = weapons[weaponIndex].GetReloadTime();
     }
 
     void Update()
@@ -59,8 +60,8 @@ public class PlayerController : MonoBehaviour
         float horizontal = Input.GetAxis("Horizontal");
         float vertical = Input.GetAxis("Vertical");
 
-        float nXPos = horizontal * speed * Time.deltaTime;
-        float nYPos = vertical * speed * Time.deltaTime;
+        float nXPos = horizontal * speed * Time.fixedDeltaTime;
+        float nYPos = vertical * speed * Time.fixedDeltaTime;
 
         anim.SetBool("moving", true);
         if (nXPos < 0)
